@@ -1,0 +1,11 @@
+node_modules
+artifacts
+cache
+coverage
+deployments
+typechain-types
+*.log
+.env
+.env.*
+dist
+build
