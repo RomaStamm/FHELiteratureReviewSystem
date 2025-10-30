@@ -1,11 +1,15 @@
 # FHE Literature Review System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-blue.svg)](https://docs.soliditylang.org/)
 [![Hardhat](https://img.shields.io/badge/Built%20with-Hardhat-yellow.svg)](https://hardhat.org/)
 [![FHEVM](https://img.shields.io/badge/FHEVM-Zama-blue.svg)](https://docs.zama.ai/fhevm)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC.svg)](https://tailwindcss.com/)
 
-> **A decentralized confidential literary awards platform powered by Fully Homomorphic Encryption (FHE), ensuring complete privacy throughout the submission, review, and award selection process.**
+> **A modern, production-ready decentralized literary awards platform built with Next.js 14 and React 18, powered by Fully Homomorphic Encryption (FHE) to ensure complete privacy throughout the submission, review, and award selection process.**
 
 ## 🌐 Live Demo & Resources
 
@@ -18,7 +22,15 @@
 
 ## 📖 Overview
 
-The FHE Literature Review System revolutionizes the literary awards process by leveraging blockchain technology and Fully Homomorphic Encryption (FHE) to create a transparent yet confidential evaluation system. This platform enables authors to submit their literary works with complete privacy while maintaining the integrity and fairness of the review process.
+The FHE Literature Review System revolutionizes the literary awards process by leveraging blockchain technology and Fully Homomorphic Encryption (FHE) to create a transparent yet confidential evaluation system. Built with Next.js 14, React 18, and TypeScript, this production-ready application provides a modern, responsive interface for authors to submit their literary works with complete privacy while maintaining the integrity and fairness of the review process.
+
+**Modern Technology Stack:**
+- 🚀 **Next.js 14** - Server and client components with App Router
+- ⚛️ **React 18** - Modern component-based UI
+- 📘 **TypeScript** - Type-safe development
+- 🎨 **Tailwind CSS** - Responsive design system
+- 🔐 **FHEVM SDK** - Integrated FHE operations
+- ⛓️ **Ethers.js v6** - Web3 blockchain interaction
 
 ## 🎯 Core Concepts
 
@@ -257,10 +269,54 @@ contract LiteratureReviewSystem {
 | **Encryption** | Zama FHEVM | Fully homomorphic encryption |
 | **Storage** | IPFS | Decentralized content storage |
 | **Blockchain** | Ethereum Sepolia | Testnet deployment |
-| **Frontend** | HTML/CSS/JavaScript | User interface |
+| **Frontend Framework** | Next.js 14 | Modern React application with App Router |
+| **UI Library** | React 18 | Component-based user interface |
+| **Language** | TypeScript 5.0 | Type-safe development |
+| **Styling** | Tailwind CSS | Responsive design system |
 | **Web3 Library** | Ethers.js v6 | Blockchain interaction |
+| **SDK** | @fhevm/sdk | FHE operations integration |
 | **Security** | Slither, Solhint | Code analysis |
 | **CI/CD** | GitHub Actions | Automated testing |
+
+### Frontend Architecture
+
+```
+┌──────────────────────────────────────────────────────┐
+│              Next.js 14 Application                  │
+├──────────────────────────────────────────────────────┤
+│                                                      │
+│  App Router Structure                                │
+│  ├── src/app/                                       │
+│  │   ├── layout.tsx        Root layout & metadata  │
+│  │   ├── page.tsx          Main application page   │
+│  │   └── globals.css       Global styles           │
+│  │                                                   │
+│  ├── src/components/       React Components         │
+│  │   ├── ConnectionStatus  Wallet connection UI    │
+│  │   ├── Notification      Toast messages          │
+│  │   ├── SubmitWork        Submission interface    │
+│  │   ├── ExpertReview      Review dashboard        │
+│  │   ├── StatusView        System monitoring       │
+│  │   └── AwardsView        Results display         │
+│  │                                                   │
+│  └── Integration                                     │
+│      ├── Ethers.js v6      Web3 connectivity       │
+│      ├── @fhevm/sdk        FHE operations          │
+│      ├── TypeScript        Type safety             │
+│      └── Tailwind CSS      Responsive design       │
+│                                                      │
+└──────────────────────────────────────────────────────┘
+```
+
+**Frontend Features:**
+- **Server Components**: Optimized performance with React Server Components
+- **Client Components**: Interactive UI with client-side state management
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+- **Real-time Updates**: Live contract state monitoring
+- **Error Handling**: Comprehensive error messages and recovery
+- **Loading States**: User feedback during blockchain transactions
+- **Wallet Integration**: Seamless MetaMask and Web3 wallet support
+- **Type Safety**: Full TypeScript coverage for reliability
 
 ### Privacy Guarantees
 
@@ -376,6 +432,21 @@ npm install
 cp .env.example .env
 ```
 
+### Running the Application
+
+```bash
+# Start the development server
+npm run dev
+
+# Open http://localhost:3000 in your browser
+
+# The Next.js frontend will be available with:
+# - Work submission interface
+# - Expert review dashboard
+# - Status monitoring
+# - Awards display
+```
+
 ### Configuration
 
 Edit `.env` file with your credentials:
@@ -426,6 +497,9 @@ npm run simulate
 
 | Command | Description |
 |---------|-------------|
+| `npm run dev` | Start Next.js development server |
+| `npm run build` | Build Next.js production bundle |
+| `npm start` | Start Next.js production server |
 | `npm run compile` | Compile smart contracts |
 | `npm run test` | Run comprehensive test suite |
 | `npm run coverage` | Generate test coverage report |
@@ -433,13 +507,45 @@ npm run simulate
 | `npm run verify` | Verify contract on Etherscan |
 | `npm run interact` | Interact with deployed contract |
 | `npm run simulate` | Run end-to-end simulation |
-| `npm run lint` | Run all linters (Solidity + JS) |
+| `npm run lint` | Run all linters (Next.js + Solidity) |
 | `npm run lint:sol` | Lint Solidity code |
-| `npm run lint:js` | Lint JavaScript code |
 | `npm run format` | Format code with Prettier |
 | `npm run format:check` | Check code formatting |
 | `npm run security` | Run Slither security analysis |
 | `npm run clean` | Clean build artifacts |
+
+### Project Structure
+
+```
+literature-review/
+├── src/                          # Next.js Application
+│   ├── app/
+│   │   ├── layout.tsx           # Root layout with metadata
+│   │   ├── page.tsx             # Main application page
+│   │   └── globals.css          # Global styles
+│   └── components/              # React Components
+│       ├── ConnectionStatus.tsx # Wallet connection indicator
+│       ├── Notification.tsx     # Toast notifications
+│       ├── SubmitWork.tsx       # Work submission interface
+│       ├── ExpertReview.tsx     # Review dashboard
+│       ├── StatusView.tsx       # System status display
+│       └── AwardsView.tsx       # Awards results
+│
+├── contracts/                   # Solidity Smart Contracts
+│   └── LiteratureReviewSystem.sol
+│
+├── scripts/                     # Deployment Scripts
+│   └── deploy.js
+│
+├── test/                        # Test Suite
+│   └── LiteratureReviewSystem.test.js
+│
+├── hardhat.config.js           # Hardhat configuration
+├── next.config.js              # Next.js configuration
+├── tailwind.config.js          # Tailwind CSS config
+├── tsconfig.json               # TypeScript config
+└── package.json                # Dependencies
+```
 
 ### Deployment Documentation
 
@@ -636,27 +742,34 @@ Administrator Actions:
 
 ### Short-Term (3-6 months)
 
+- [x] **Modern React Frontend** - Completed with Next.js 14 and TypeScript
+- [x] **Mobile-Responsive Design** - Implemented with Tailwind CSS
 - [ ] Multi-round review process
 - [ ] Category-specific scoring criteria
-- [ ] Mobile-responsive frontend
-- [ ] Multiple language support
+- [ ] Multiple language support (i18n)
 - [ ] Reviewer reputation system
+- [ ] Progressive Web App (PWA) support
 
 ### Medium-Term (6-12 months)
 
-- [ ] Decentralized governance
-- [ ] Token incentive system
+- [ ] Decentralized governance with DAO structure
+- [ ] Token incentive system for reviewers
 - [ ] AI-assisted preliminary screening
 - [ ] Cross-platform publishing integration
-- [ ] Advanced analytics dashboard
+- [ ] Advanced analytics dashboard with charts
+- [ ] Real-time notifications using WebSockets
+- [ ] Enhanced accessibility (WCAG 2.1 AA compliance)
 
 ### Long-Term (12+ months)
 
-- [ ] Layer 2 scaling solution
-- [ ] Mainnet deployment
-- [ ] DAO governance structure
-- [ ] NFT award certificates
+- [ ] Layer 2 scaling solution (Arbitrum/Optimism)
+- [ ] Mainnet deployment with production security audit
+- [ ] Full DAO governance structure
+- [ ] NFT award certificates on-chain
 - [ ] Interoperability with other literary platforms
+- [ ] Native mobile applications (iOS/Android)
+- [ ] API for third-party integrations
+- [ ] Decentralized storage migration (IPFS/Arweave)
 
 ## 🤝 Contributing
 
@@ -693,5 +806,7 @@ MIT License - This project is open-source and available for use in promoting fai
 ---
 
 **Built for the Global Literary Community | Powered by Fully Homomorphic Encryption | Securing Creativity Through Cryptography**
+
+🚀 Built with **Next.js 14** • ⚛️ **React 18** • 📘 **TypeScript** • 🎨 **Tailwind CSS** • 🔐 **FHEVM** • ⛓️ **Ethers.js v6**
 
 📚 [Deployment Guide](DEPLOYMENT.md) | 🔒 [Security Policy](SECURITY.md) | ⚡ [Performance Guide](PERFORMANCE.md) | 🎥 [Demo Video](demo.mp4)
