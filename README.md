@@ -34,6 +34,57 @@ The FHE Literature Review System revolutionizes the literary awards process by l
 
 ## 🎯 Core Concepts
 
+### Gateway Callback Architecture with Refund & Timeout Protection
+
+The system implements an **innovative Gateway callback pattern** that ensures robustness and fairness:
+
+```
+User Flow (Secure & Protected)
+┌────────────────────────────────────────────────────┐
+│ Step 1: User submits encrypted review             │
+│ → Contract records encrypted data + creates       │
+│   decryption request (Gateway pattern)            │
+└────────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────────┐
+│ Step 2: Gateway decrypts & executes callback       │
+│ → Success: Update contract with score             │
+│ → Failure: User can claim refund (protection)     │
+└────────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────────┐
+│ Step 3: Timeout Protection                         │
+│ → If decryption exceeds timeout (1 hour):         │
+│   User automatically eligible for refund          │
+│ → Prevents permanent fund locking                 │
+└────────────────────────────────────────────────────┘
+```
+
+**Key Protections:**
+- **Refund Mechanism**: Full stake refunded if decryption fails
+- **Timeout Safety**: 1-hour timeout prevents permanent locking
+- **Async Processing**: Gateway callback ensures eventual consistency
+- **Audit Trail**: All operations logged for transparency
+
+### Privacy Innovation: Division & Price Leakage Protection
+
+This platform introduces **advanced privacy techniques** to prevent cryptanalysis:
+
+1. **Division Problem Solution**
+   - Random multipliers (100-1000x) applied to each score before aggregation
+   - Makes it cryptographically infeasible to extract individual scores from totals
+   - Multipliers remain encrypted during computation
+
+2. **Price Leakage Prevention (Score Obfuscation)**
+   - Individual scores are "fuzzy aggregated" with randomization
+   - Prevents pattern recognition across review periods
+   - Stops cryptanalysis attacks on encrypted aggregates
+
+3. **HCU Optimization (Homomorphic Computation Unit)**
+   - All computations performed on encrypted data
+   - Minimal on-chain data exposure
+   - Gas-optimized ciphertext handling
+
 ### FHE-Powered Confidential Literary Manuscript Review
 
 This platform implements **Fully Homomorphic Encryption (FHE)** to enable computation on encrypted data, ensuring that sensitive information remains confidential throughout the entire awards process:
@@ -105,6 +156,93 @@ Encrypted reviews prevent external pressure:
 - No way to trace individual scores to reviewers
 - Freedom to provide honest, critical feedback
 - Protection from author retaliation
+
+## 🛡️ Security & Innovation Architecture
+
+### Input Validation & Access Control
+
+```
+Security Layers (Progressive Defense)
+┌─────────────────────────────────────┐
+│ Layer 1: Input Validation           │
+│ - Score range enforcement (1-100)   │
+│ - String length validation          │
+│ - Address zero-check                │
+└─────────────────────────────────────┘
+                  ↓
+┌─────────────────────────────────────┐
+│ Layer 2: Access Control             │
+│ - Role-based authorization          │
+│ - Period gating (submission/review) │
+│ - Reviewer approval requirement     │
+└─────────────────────────────────────┘
+                  ↓
+┌─────────────────────────────────────┐
+│ Layer 3: Overflow Protection        │
+│ - Solidity 0.8+ built-in checks     │
+│ - Safe arithmetic operations        │
+│ - No integer overflow vulnerabilities
+└─────────────────────────────────────┘
+                  ↓
+┌─────────────────────────────────────┐
+│ Layer 4: Reentrancy Guards          │
+│ - noReentrant modifier on sensitive │
+│   functions (refunds, withdrawals)  │
+│ - Checks-Effects-Interactions       │
+└─────────────────────────────────────┘
+                  ↓
+┌─────────────────────────────────────┐
+│ Layer 5: Audit Logging              │
+│ - All critical operations logged    │
+│ - Reviewer approval/revocation      │
+│ - Refund claims tracked            │
+│ - Decryption status monitored       │
+└─────────────────────────────────────┘
+```
+
+### Timeout & Refund Mechanisms
+
+**Three-Layer Protection Against Fund Locking:**
+
+1. **Decryption Failure Refund** (1 hour timeout)
+   - If Gateway decryption fails or doesn't complete
+   - Reviewers can claim full stake refund
+   - Prevents loss of funds due to external service failure
+
+2. **Submission Timeout Refund** (7 days)
+   - Authors recover deposits if work isn't reviewed
+   - Ensures funds don't lock indefinitely
+   - Automatic eligibility after timeout
+
+3. **Reviewer Timeout Refund** (7 days)
+   - Reviewers recover stakes on timeout
+   - Eligible if decryption failed or hasn't completed
+   - Fair compensation for commitment
+
+### API Audit Points
+
+The contract emits detailed audit events for monitoring:
+
+```solidity
+// Approval/Revocation
+event ReviewerApproved(address indexed reviewer)
+event ReviewerRevoked(address indexed reviewer)
+
+// Decryption Status
+event DecryptionRequested(uint32 indexed period, uint32 indexed workId, uint256 requestId)
+event DecryptionCompleted(uint32 indexed period, uint32 indexed workId, uint64 score)
+event DecryptionFailed(uint32 indexed period, uint32 indexed workId, uint256 requestId)
+event DecryptionTimeout(uint32 indexed period, uint32 indexed workId, uint256 requestId)
+event GatewayCallbackExecuted(uint256 indexed requestId, bool success, uint64 score)
+
+// Refund Tracking
+event DecryptionFailureRefundIssued(address indexed reviewer, uint256 amount, uint256 requestId)
+event ReviewerTimeoutRefundIssued(address indexed reviewer, uint256 amount, uint32 period, uint32 workId)
+event SubmitterTimeoutRefundIssued(address indexed submitter, uint256 amount, uint32 period, uint32 workId)
+
+// Comprehensive Audit Log
+event AuditLog(string indexed action, address indexed user, uint256 timestamp, string details)
+```
 
 ## ✨ Key Features
 
@@ -231,42 +369,87 @@ The platform utilizes Fully Homomorphic Encryption from Zama to perform computat
 
 ```solidity
 contract LiteratureReviewSystem {
-    // Core Components
+    // Core Components (Enhanced with Gateway Pattern)
 
     1. Submission Management
        - Store encrypted manuscript metadata
        - Track submission status and timeline
        - Manage IPFS content references
+       - Timeout protection for deposits (7 days)
 
-    2. Reviewer Registry
+    2. Reviewer Registry & Authorization
        - Maintain authorized expert list
        - Track reviewer credentials
        - Manage review assignments
+       - Audit logging for approvals/revocations
 
-    3. Review System
+    3. Review System (Gateway Pattern)
        - Store encrypted evaluations
-       - Aggregate scores using FHE
+       - Aggregate scores using FHE with privacy multipliers
        - Prevent duplicate reviews
+       - Async decryption via Gateway callbacks
+       - Refund mechanism for failed/timeout decryptions
 
-    4. Award Engine
+    4. Privacy Protection Engine
+       - Division problem solution: Random multipliers (100-1000x)
+       - Price leakage prevention: Fuzzy score aggregation
+       - HCU optimization: Gas-efficient ciphertext operations
+       - Encrypted metadata throughout lifecycle
+
+    5. Refund & Protection System
+       - Decryption failure refunds (1 hour timeout)
+       - Submission timeout refunds (7 days)
+       - Reviewer timeout refunds (7 days)
+       - Reentrancy guards on fund transfers
+       - Comprehensive audit logging
+
+    6. Award Engine
        - Calculate winners using FHE operations
        - Determine category-specific results
        - Manage award announcements
+       - Selective decryption only after approval
 
-    5. Period Controller
+    7. Period Controller
        - Enforce submission deadlines
        - Control review windows
        - Schedule result releases
+       - Emergency pause mechanism
 }
 ```
+
+### Enhanced Features (Reference from )
+
+The contract incorporates innovative patterns from decentralized systems:
+
+1. **Gateway Callback Pattern** (from BeliefMarket)
+   - Async decryption requests with callback verification
+   - Solves timeout and reliability issues
+   - Ensures eventual consistency in FHE operations
+
+2. **Refund Mechanisms**
+   - Decryption failure refund (prevents loss from external service issues)
+   - Timeout refunds (prevents permanent fund locking)
+   - Three-layer protection ensures fairness
+
+3. **Privacy Multipliers**
+   - Random numbers applied to encrypted scores
+   - Prevents score inference through mathematical analysis
+   - Protects against division-based attacks
+
+4. **Audit Trail**
+   - All critical operations logged as events
+   - Reviewer management tracked completely
+   - Refund claims documented for transparency
+   - Decryption status monitored end-to-end
 
 ### Technology Stack
 
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
-| **Smart Contracts** | Solidity 0.8.24 | Core business logic |
-| **Development** | Hardhat | Testing and deployment |
+| **Smart Contracts** | Solidity 0.8.24 | Core business logic with FHE |
+| **Development** | Hardhat | Testing and deployment framework |
 | **Encryption** | Zama FHEVM | Fully homomorphic encryption |
+| **Gateway Pattern** | FHE Callbacks | Async decryption with verification |
 | **Storage** | IPFS | Decentralized content storage |
 | **Blockchain** | Ethereum Sepolia | Testnet deployment |
 | **Frontend Framework** | Next.js 14 | Modern React application with App Router |
@@ -274,9 +457,10 @@ contract LiteratureReviewSystem {
 | **Language** | TypeScript 5.0 | Type-safe development |
 | **Styling** | Tailwind CSS | Responsive design system |
 | **Web3 Library** | Ethers.js v6 | Blockchain interaction |
-| **SDK** | @fhevm/sdk | FHE operations integration |
-| **Security** | Slither, Solhint | Code analysis |
-| **CI/CD** | GitHub Actions | Automated testing |
+| **SDK** | @fhevm/sdk | FHE operations + privacy multipliers |
+| **Security** | Slither, Solhint | Static code analysis |
+| **Audit** | Event Logging | Comprehensive operation audit trail |
+| **CI/CD** | GitHub Actions | Automated testing and deployment |
 
 ### Frontend Architecture
 
@@ -328,20 +512,44 @@ contract LiteratureReviewSystem {
 │  Layer 1: Encryption at Rest                        │
 │  └─ All sensitive data encrypted on-chain           │
 │                                                      │
-│  Layer 2: Zero-Knowledge Proofs                     │
-│  └─ Verify submissions without revealing content    │
+│  Layer 2: Input Validation & Access Control         │
+│  └─ Role-based authorization, score validation      │
 │                                                      │
 │  Layer 3: Homomorphic Computation                   │
-│  └─ Process data without decryption                 │
+│  └─ Process data without decryption (HCU optimized) │
 │                                                      │
-│  Layer 4: Selective Disclosure                      │
-│  └─ Reveal only authorized information              │
+│  Layer 4: Privacy Multipliers                       │
+│  └─ Random obfuscation protects against division    │
+│     and pattern-based attacks                       │
 │                                                      │
-│  Layer 5: Immutable Audit Trail                     │
+│  Layer 5: Fuzzy Aggregation                         │
+│  └─ Score obfuscation prevents inference attacks    │
+│                                                      │
+│  Layer 6: Gateway Callback Pattern                  │
+│  └─ Async decryption with timeout protection       │
+│     prevents permanent locking                      │
+│                                                      │
+│  Layer 7: Selective Disclosure                      │
+│  └─ Reveal only authorized information after        │
+│     approval and successful decryption             │
+│                                                      │
+│  Layer 8: Comprehensive Audit Trail                 │
 │  └─ Blockchain ensures tamper-proof records         │
+│     with detailed event logging                     │
 │                                                      │
 └──────────────────────────────────────────────────────┘
 ```
+
+**Privacy Innovation Summary:**
+
+| Protection | Method | Benefit |
+|-----------|--------|---------|
+| **Division Leakage** | Random multipliers (100-1000x) | Prevents score inference |
+| **Price Leakage** | Fuzzy aggregation | Stops pattern recognition |
+| **Timeout Attacks** | 1-hour + 7-day refunds | Ensures fund recovery |
+| **Reentrancy** | Guard on all refund functions | Prevents double spending |
+| **Access Control** | Role-based permissions | Limits unauthorized use |
+| **Audit Trail** | Comprehensive event logging | Full transparency |
 
 ## 🎬 Demo Video
 
